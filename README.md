@@ -35,3 +35,16 @@
     ]
 }
 ```
+**2. tiny-react의 실습 환경 구성**
+
+```shell
+npm init # 프로젝트 초기화
+
+# tiny-react를 트랜스파일링 하기 위해 babel 및 preset 설치
+npm i -D @babel/core @babel/cli @babel/preset-react
+
+# babel.config.json 추가
+{
+  "presets": ["@babel/preset-react"]
+}
+```

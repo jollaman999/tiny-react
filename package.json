@@ -1,0 +1,11 @@
+{
+  "name": "tiny-react",
+  "scripts": {
+    "build": "babel src -d build -w"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-react": "^7.16.7"
+  }
+}
