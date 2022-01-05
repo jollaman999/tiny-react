@@ -137,6 +137,7 @@ export function createElement(tagName, props, ...children) {
 **6. render 인자 확인하기**
 
 ```javascript
+// /src/react.js
 export function render(vdom, container) {
     console.log(vdom, container);
 }
@@ -179,12 +180,20 @@ createElement의 첫 번째 인자는 태그명인 문자열(ex. h2) 또는 함�
 **7. createElement 수정**
 
 ```javascript
+// /src/react.js
+export function render(vdom, container) {
+    
+    
+    container.appendChild()
+}
+
 export function createElement(tagName, props, ...children) {
     if (typeof tagName === 'function')
         return tagName.apply(null, [props, ...children]);
-    
+
     return { tagName, props, children };
 }
+
 ```
 
 createElement에서 함수를 실행해주면 render에서 첫 번째 인자로 태그명이 전달된다.
@@ -195,3 +204,35 @@ children: ['Hello Tiny React']
 props: null
 tagName: "h2"
 ```
+
+**8. render 구현**
+
+render 함수는 인자로 넘어온 vdom 객체를 랜더링 해주는 역할을 수행하도록 구현한다.
+
+```javascript
+// /src/react.js
+function renderRealDOM(vdom) {
+    if (typeof vdom === 'string') return document.createTextNode(vdom);
+    if (vdom === undefined) return;
+
+    const $el = document.createElement(vdom.tagName);
+
+    vdom.children.map(renderRealDOM).forEach(node => $el.appendChild(node));
+
+    return $el;
+}
+
+export function render(vdom, container) {
+    container.appendChild(renderRealDOM(vdom));
+}
+
+export function createElement(tagName, props, ...children) {
+    if (typeof tagName === 'function')
+        return tagName.apply(null, [props, ...children]);
+
+    return { tagName, props, children };
+}
+```
+
+vdom은 children 배열을 element로 변환하는 재귀함수로 구현되어야 한다. 따라서 renderRealDOM 함수로 분리하여 구현한다.
+여기까지 하면 기본 구조는 완료 되었다.
