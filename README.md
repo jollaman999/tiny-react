@@ -75,3 +75,45 @@ render 함수의 첫번쨰 인자가 React.createElement로 감싸진 형태로 
 import { render } from './react.js';
 render( /*#__PURE__*/React.createElement("div", null, "Hello Tine React!"), document.getElementById('root'));
 ```
+
+**4. 기본적인 React의 사용 형태 작성 2**
+
+createElement 함수도 react.js에 추가해주자.
+```javascript
+// /src/react.js
+export function render() {}
+
+export function createElement() {}
+```
+
+babel에게 jsx 구문을 내가 새로 만든 createElement로 해석하도록 지시해준다.
+@jsx는 해당 jsx 구문을 어떤 지시어로 변환할 것인가에 대한 명세이다. 기본값은 React.createElement 이다.
+```javascript
+// /src/index.js
+/* @jsx createElement */
+import { createElement, render } from './react.js';
+
+function Title() {
+    return <h2>Hello Tiny React</h2>;
+}
+
+render(
+    <Title />,
+    <div>Hello Tine React!</div>,
+    document.getElementById('root')
+);
+
+```
+
+@babel/preset-react에 약속이 정해져 있어서 바벨로 트랜스파일링 시 규칙대로 변환된다.
+```javascript
+// /build/index.js
+/* @jsx createElement */
+import { createElement, render } from './react.js';
+
+function Title() {
+    return createElement("h2", null, "Hello Tiny React");
+}
+
+render(createElement(Title, null), createElement("div", null, "Hello Tine React!"), document.getElementById('root'));
+```

@@ -1,3 +1,12 @@
-import { render } from './react.js';
+/* @jsx createElement */
+import { createElement, render } from './react.js';
 
-render(<div>Hello Tine React!</div>, document.getElementById('root'));
+function Title() {
+  return <h2>Hello Tiny React</h2>;
+}
+
+render(
+  <Title />,
+  <div>Hello Tine React!</div>,
+  document.getElementById('root')
+);
