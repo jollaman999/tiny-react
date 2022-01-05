@@ -48,3 +48,30 @@ npm i -D @babel/core @babel/cli @babel/preset-react
   "presets": ["@babel/preset-react"]
 }
 ```
+
+**3. 기본적인 React의 사용 형태 작성 1**
+
+리액트에는 어떤 함수가 있을까 생각해보면 기본적으로 가상돔을 실제돔에 그려주는 render 함수가 있다.
+
+```javascript
+// /src/react.js
+export function render() {}
+```
+
+리액트에서 구현된 render 함수는 아래와 같이 사용할 수 있다.
+```javascript
+// /src/index.js
+import { render } from './react.js';
+
+render(<div>Hello Tine React!</div>, document.getElementById('root'));
+```
+
+위처럼 작성 후 바벨로 트랜스파일링 한 결과를 보면 아래와 같이 출력되는데
+render 함수의 첫번쨰 인자가 React.createElement로 감싸진 형태로 변환된 것을 볼 수 있다.
+이를 통해서 바벨이 render 함수를 해석할 때 preset-react를 통해서 render함수의 첫 번째 인자를 React의 createElement 함수를 사용하도록 변환하는 것으로 추측해볼 수 있다.</br>
+그래서 createElement 함수도 리액트에 있을 것이라고 생각해볼 수 있다.
+```javascript
+// /build/index.js
+import { render } from './react.js';
+render( /*#__PURE__*/React.createElement("div", null, "Hello Tine React!"), document.getElementById('root'));
+```
