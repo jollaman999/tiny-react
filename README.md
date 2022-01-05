@@ -175,3 +175,23 @@ render 함수 내에 첫번째 인자로 createElement에서 반환된 값(vdom)
 createElement의 첫 번째 인자는 태그명인 문자열(ex. h2) 또는 함수(ex. Title)가 들어오는 것을 알 수 있다.<br/>
 이는 jsx 컴파일러가 대문자로 시작하는 함수는 사용자가 정의한 컴포넌트로 인식하여 함수자체를 넘겨주도록 디자인이 되어있다.<br/>
 따라서 createElement 함수에서 이 함수(ex. Title)를 실행하여 주어야 한다.
+
+**7. createElement 수정**
+
+```javascript
+export function createElement(tagName, props, ...children) {
+    if (typeof tagName === 'function')
+        return tagName.apply(null, [props, ...children]);
+    
+    return { tagName, props, children };
+}
+```
+
+createElement에서 함수를 실행해주면 render에서 첫 번째 인자로 태그명이 전달된다.
+```
+// 브라우저 콘솔
+Object
+children: ['Hello Tiny React']
+props: null
+tagName: "h2"
+```
