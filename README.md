@@ -133,3 +133,45 @@ export function createElement(tagName, props, ...children) {
     return { tagName, props, children };
 }
 ```
+
+**6. render 인자 확인하기**
+
+```javascript
+export function render(vdom, container) {
+    console.log(vdom, container);
+}
+
+export function createElement(tagName, props, ...children) {
+    return { tagName, props, children };
+}
+
+```
+
+render 함수에 넘겨주는 인자는 컴포넌트와, 가상돔을 랜더링 할 element 이다.
+render에 들어온 인자를 console로 출력해보면 tagName에 함수가 들어온 것을 확인 할 수 있다.
+
+```
+{props: null, children: Array(0), tagName: ƒ}
+children: []
+props: null
+tagName: f Title()
+```
+
+번들된 파일도 살펴보면
+
+```javascript
+// /build/index.js
+/* @jsx createElement */
+import { createElement, render } from './react.js';
+
+function Title() {
+    return createElement("h2", null, "Hello Tiny React");
+}
+
+render(createElement(Title, null), document.getElementById('root'));
+```
+
+render 함수 내에 첫번째 인자로 createElement에서 반환된 값(vdom)이 들어가고 createElement 함수의 첫 번째 인자로는 Title 함수가 들어간다.<br/>
+createElement의 첫 번째 인자는 태그명인 문자열(ex. h2) 또는 함수(ex. Title)가 들어오는 것을 알 수 있다.<br/>
+이는 jsx 컴파일러가 대문자로 시작하는 함수는 사용자가 정의한 컴포넌트로 인식하여 함수자체를 넘겨주도록 디자인이 되어있다.<br/>
+따라서 createElement 함수에서 이 함수(ex. Title)를 실행하여 주어야 한다.
