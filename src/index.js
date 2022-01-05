@@ -5,8 +5,4 @@ function Title() {
   return <h2>Hello Tiny React</h2>;
 }
 
-render(
-  <Title />,
-  <div>Hello Tine React!</div>,
-  document.getElementById('root')
-);
+render(<Title />, document.getElementById('root'));

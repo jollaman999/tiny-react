@@ -1,3 +1,5 @@
 export function render() {}
 
-export function createElement() {}
+export function createElement(tagName, props, ...children) {
+  return { tagName, props, children };
+}

@@ -117,3 +117,19 @@ function Title() {
 
 render(createElement(Title, null), createElement("div", null, "Hello Tine React!"), document.getElementById('root'));
 ```
+
+**5. 기본적인 React의 사용 형태 작성 2**
+
+4단계에서 render 함수에 커스텀 Element 인 Title을 전달 후 트랜스파일링 된 결과를 살펴보면<br/>
+createElement의 인자로 태그명, 속성, children이 전달되는 것을 확인할 수 있다.<br/>
+그래서 createElement에 인자를 작성해보자.<br/>
+createElement는 노드의 가상돔을 반환해주는 역할을 하므로 받은 인자를 통해 객체 반환을 해준다.
+(nodes: DOM API상에 존재하는 모든 것들. 그것들을 모두 포괄하는 이름이 node이다.)
+```javascript
+// /src/react.js
+export function render() {}
+
+export function createElement(tagName, props, ...children) {
+    return { tagName, props, children };
+}
+```
