@@ -35,6 +35,7 @@
     ]
 }
 ```
+
 **2. tiny-react의 실습 환경 구성**
 
 ```shell
@@ -73,7 +74,7 @@ render 함수의 첫번쨰 인자가 React.createElement로 감싸진 형태로 
 ```javascript
 // /build/index.js
 import { render } from './react.js';
-render( /*#__PURE__*/React.createElement("div", null, "Hello Tine React!"), document.getElementById('root'));
+render( /*#__PURE__*/React.createElement("div", null, "Hello Tiny React!"), document.getElementById('root'));
 ```
 
 **4. 기본적인 React의 사용 형태 작성 2**
@@ -182,8 +183,6 @@ createElement의 첫 번째 인자는 태그명인 문자열(ex. h2) 또는 함�
 ```javascript
 // /src/react.js
 export function render(vdom, container) {
-    
-    
     container.appendChild()
 }
 
@@ -236,3 +235,4 @@ export function createElement(tagName, props, ...children) {
 
 vdom은 children 배열을 element로 변환하는 재귀함수로 구현되어야 한다. 따라서 renderRealDOM 함수로 분리하여 구현한다.
 여기까지 하면 기본 구조는 완료 되었다.
+

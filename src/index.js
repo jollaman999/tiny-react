@@ -5,7 +5,7 @@ function Title() {
   return (
     <h2>
       Hello Tiny React
-      <div>Bye Tine React</div>
+      <div>Bye Tiny React</div>
     </h2>
   );
 }
