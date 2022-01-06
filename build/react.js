@@ -1,3 +1,5 @@
+import { Component } from "./index.js";
+
 function renderRealDOM(vdom) {
   if (typeof vdom === 'string') return document.createTextNode(vdom);
   if (vdom === undefined) return;
@@ -6,9 +8,14 @@ function renderRealDOM(vdom) {
   return $el;
 }
 
-export function render(vdom, container) {
-  container.appendChild(renderRealDOM(vdom));
-}
+export const render = function () {
+  let prevVdom = null;
+  return function (nextVdom, container) {
+    if (prevVdom === null) prevVdom = nextVdom; // diff 로직이 존재할 것
+
+    container.appendChild(renderRealDOM(nextVdom));
+  };
+}();
 export function createElement(tagName, props, ...children) {
   if (typeof tagName === 'function') return tagName.apply(null, [props, ...children]);
   return {

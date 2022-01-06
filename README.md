@@ -236,3 +236,53 @@ export function createElement(tagName, props, ...children) {
 vdom은 children 배열을 element로 변환하는 재귀함수로 구현되어야 한다. 따라서 renderRealDOM 함수로 분리하여 구현한다.
 여기까지 하면 기본 구조는 완료 되었다.
 
+
+
+---
+
+우리가 생각하는 가상돔 이라하면 diff 알고리즘을 이용하여 현재 dom과 업데이트 된 부분을 비교하여 변경된 부분만 적용하는 부분이 필요하다.
+그러나 7번의 과정까지는 diff 알고리즘은 구현하지 않았고 간단하게 jsx로 만들어진 컴포넌트를 가상돔으로 만들고,<br/>
+그 가상돔의 실체는 무엇이고 그 가상돔은 어떻게 실제돔으로 바꾸는지까지만 구현 된 것이다. (그 가상돔의 실체를 알아본 과정이었다.)
+
+이 구조까지만 보면 아쉬우니깐 실제 리액트에서는 어떤식으로 가상돔의 현재버전과 업데이트 할 가상돔을 비교할 수 있는지 구조만 잡아보자!<br/>
+함수 내에서 이전 상태를 알 수 있으려면 어떻게해야할까.. 클로저를 사용해보자..
+
+**9. render 함수를 클로저를 이용하여 이전 상태를 기억하도록 수정**
+
+```javascript
+// /src/react.js
+function renderRealDOM(vdom) {
+    if (typeof vdom === 'string') return document.createTextNode(vdom);
+    if (vdom === undefined) return;
+
+    const $el = document.createElement(vdom.tagName);
+
+    vdom.children.map(renderRealDOM).forEach(node => $el.appendChild(node));
+
+    return $el;
+}
+
+export const render = (function() {
+    let prevVdom = null;
+    
+    return function (nextVdom, container) {
+        if (prevVdom === null)
+            prevVdom = nextVdom;
+        
+        // diff logic
+        
+        container.appendChild(renderRealDOM(nextVdom));
+    }
+})();
+
+export function createElement(tagName, props, ...children) {
+    if (typeof tagName === 'function')
+        return tagName.apply(null, [props, ...children]);
+
+    return { tagName, props, children };
+}
+```
+
+기존의 함수와 동일하게 동작하면서 이전 상태값을 클로저를 통해 기억해둘 수 있도록 IIFE를 활용하여 수정한다.
+diff logic 부분에서 이전값과 비교 알고리즘을 작성할 수 있을 것이다.
+실제 구현은 이렇게 단순하지 않겠지만, Tiny react에서는 간단히 이정도만 생각하도록 한다.
