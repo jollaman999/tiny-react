@@ -286,3 +286,59 @@ export function createElement(tagName, props, ...children) {
 기존의 함수와 동일하게 동작하면서 이전 상태값을 클로저를 통해 기억해둘 수 있도록 IIFE를 활용하여 수정한다.
 diff logic 부분에서 이전값과 비교 알고리즘을 작성할 수 있을 것이다.
 실제 구현은 이렇게 단순하지 않겠지만, Tiny react에서는 간단히 이정도만 생각하도록 한다.
+
+**10. 클래스 컴포넌트 랜더링하기**
+
+```javascript
+/* @jsx createElement */
+// 해당 jsx 구문을 어떤 지시어로 변환할 것인가에 대한 명세 default React.createElement
+import { createElement, render } from './react.js';
+
+export class Component {
+}
+
+function Title() {
+   return (
+           <div>
+              <h2>안녕, React!</h2>
+              <p>반가워!</p>
+              <div>This is Functional Component</div>
+              <Body/>
+           </div>
+   )
+}
+
+class Body extends Component {
+   render() {
+      return <div>This is Class Component</div>
+   }
+}
+
+console.log(Title()); // 가상돔의 형태를 볼 수 있도록 확인
+
+render(<Title/>, document.querySelector('#root'));
+
+```
+
+Title 함수는 함수형 컴포넌트이다. 그런데 React에는 클래스형 컴포넌트도 있으므로 클래스형 컴포넌트를 작성해서 랜더링을 해보도록 하자.
+클래스 인스턴스를 생성해주어야하기 때문에 createElement 함수 내에서 해당 인스턴스를 생성하여 반환해주어야한다.
+따라서 createElement 함수에서 인스턴스를 생성하는 로직을 추가한다.
+
+```javascript
+export function createElement(tagName, props, ...children) {
+    if(typeof tagName === 'function') {
+        if(tagName.prototype instanceof Component) {
+            const instance = new tagName({...props, children});
+            return instance.render();
+        }
+        else
+            return tagName.apply(null, [ props, ...children ]);
+    }
+    
+    return {tagName, props, children};
+}
+```
+
+여기까지 하면 동작을 한다.
+다만 프로퍼티 처리, 클래스컴포넌트의 라이프사이클,
+인스턴스 생성 제한(인스턴스를 전역적인 저장소에 저장 후 상태를 관리 > 함수형 컴포넌트가 상태를 가지지 않는 이유를 생각해 볼 수 있다.) 등..
