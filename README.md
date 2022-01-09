@@ -342,3 +342,24 @@ export function createElement(tagName, props, ...children) {
 여기까지 하면 동작을 한다.
 다만 프로퍼티 처리, 클래스컴포넌트의 라이프사이클,
 인스턴스 생성 제한(인스턴스를 전역적인 저장소에 저장 후 상태를 관리 > 함수형 컴포넌트가 상태를 가지지 않는 이유를 생각해 볼 수 있다.) 등..
+
+**11. hook**
+
+함수형 컴포넌트가 어떻게 상태를 가질 수 있을까?
+우선은 가장 많이 쓰이는 useState 훅을 작성해보자.
+
+```javascript
+export function useState(initValue) {
+    let value = initValue;
+    
+    return [
+        value,
+        (nextValue) => {
+            value = nextValue;
+        }
+    ]
+}
+```
+
+useState 훅은 단순히 위와같은 형태로 구현 되어있는데, 초기 랜더링 이후에 함수가 이전 값을 가지고 있으려면,
+값을 관리할 수 있는 공간이 따로 있어야 겠다는 발상을 해볼 수 있다.

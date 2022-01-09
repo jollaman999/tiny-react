@@ -1,8 +1,30 @@
 /* @jsx createElement */
-import { createElement, render } from './react.js';
+import { createElement, render, useState } from './react.js';
 
 function Title() {
-  return createElement("h2", null, "Hello Tiny React", createElement("div", null, "Bye Tiny React"));
+  console.count('Check Rendering Title');
+  let [count, setCount] = useState(0);
+  console.log('count', count);
+
+  const handleCount = (action, count) => {
+    console.log('handleCount count', count);
+
+    switch (action) {
+      case 'plus':
+        setCount(count + 1);
+        break;
+
+      case 'minus':
+        setCount(count - 1);
+        break;
+    }
+  };
+
+  return createElement("h2", null, "Hello Tiny React", createElement("div", null, "Bye Tiny React"), createElement("div", null, "Count : ", count), createElement("button", {
+    onClick: () => handleCount('plus', count)
+  }, "+"), createElement("button", {
+    onClick: () => handleCount('minus', count)
+  }, "-"));
 }
 
 export class Component {}
