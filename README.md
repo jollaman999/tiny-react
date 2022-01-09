@@ -363,3 +363,52 @@ export function useState(initValue) {
 
 useState 훅은 단순히 위와같은 형태로 구현 되어있는데, 초기 랜더링 이후에 함수가 이전 값을 가지고 있으려면,
 값을 관리할 수 있는 공간이 따로 있어야 겠다는 발상을 해볼 수 있다.
+
+훅의 상태를 관리하는 hooks라는 컨텍스트를 만들어서 상태를 관리할 수 있도록 수정하자!
+대략적으로 아래와 같이 수정하면 createElement 함수와 useState 함수는 독립적이어서 서로의 상태를 알 수 없었지만,
+하나의 컨텍스트를 공유하면서 이전 상태를 클로저로 관리할 수 있다.
+
+```javascript
+let hooks = [];
+let currentComponent = -1;
+
+export function useState(initValue) {
+    let position = currentComponent;
+    
+    if(!hooks[position]) {
+        hooks[position] = initValue;
+    }
+    
+    return [
+        hooks[position],
+        (nextValue) => {
+            hooks[position] = nextValue;
+        }
+    ]
+}
+
+export function createElement(tagName, props, ...children) {
+   if(typeof tagName === 'function') {
+      if(tagName.prototype instanceof Component) { // 클래스형 컴포넌트
+         const instance = new tagName({...props, children});
+         return instance.render();
+      }
+      else { // 함수형 컴포넌트
+         currentComponent++; // <-- 이 hook이 조건문 안에 들어가지 못하는 이유!
+
+         return tagName.apply(null, [ props, ...children ]);
+      }
+   }
+
+   return {tagName, props, children};
+}
+```
+
+리액트 문서에서 살펴보면 컴포넌트 내에서 hook의 갯수는 동일해야한다고 한다.<br/>
+hook은 함수형 컴포넌트에서만 사용할 수 있고, 컴포넌트 내의 hook의 수가 변하지 않는다는 전제하에 동작한다.
+
+여기까지 간단히 React 라이브러리가 어떻게 구현되었을지 의사코드를 작성하면서 학습하였다.<br/>
+render 함수와 createElement 함수는 간단히 동작하는 것까지 확인 가능하다.<br/>
+하지만 useState를 사용하고 화면에 다시 렌더링 되는 모습을 확인하고 싶다면, 추가적인 구현이 필요하다.<br/>
+아직은 어떻게 해야 간단히 동작하도록 구현할 수 있는지 분석중에 있다. (어렵네.. 😬 아직은 수련이 부족하다..)
+

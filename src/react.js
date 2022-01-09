@@ -1,12 +1,19 @@
 import { Component } from "./index.js";
 
+let hooks = [];
+let currentComponent = -1;
+
 export function useState(initValue) {
-  let value = initValue;
+  let position = currentComponent;
+
+  if(!hooks[position]) {
+    hooks[position] = initValue;
+  }
 
   return [
-    value,
+    hooks[position],
     (nextValue) => {
-      value = nextValue;
+      hooks[position] = nextValue;
     }
   ]
 }
@@ -36,23 +43,17 @@ export const render = function () {
 }();
 
 export function createElement(tagName, props, ...children) {
-  if (typeof tagName === 'function') {
-    if (tagName.prototype instanceof Component) {
-      // 클래스형 컴포넌트
-      const instance = new tagName({
-        props,
-        ...children
-      });
+  if(typeof tagName === 'function') {
+    if(tagName.prototype instanceof Component) { // 클래스형 컴포넌트
+      const instance = new tagName({...props, children});
       return instance.render();
-    } // 함수형 컴포넌트
+    }
+    else { // 함수형 컴포넌트
+      currentComponent++; // <-- 이 hook이 조건문 안에 들어가지 못하는 이유!
 
-
-    return tagName.apply(null, [props, ...children]);
+      return tagName.apply(null, [ props, ...children ]);
+    }
   }
 
-  return {
-    tagName,
-    props,
-    children
-  };
+  return {tagName, props, children};
 }
